@@ -16,6 +16,9 @@ func Getxattr(path, name string) ([]byte, error) {
 		return nil, &XAttrError{"extattr_get_file", path, name, err}
 	}
 	buf := make([]byte, size)
+	if size == 0 {
+		return buf, nil
+	}
 	// Read into buffer of that size.
 	read, err := extattr_get_file(path, EXTATTR_NAMESPACE_USER, name, &buf[0], size)
 	if err != nil {
@@ -31,6 +34,9 @@ func Listxattr(path string) ([]string, error) {
 	size, err := extattr_list_file(path, EXTATTR_NAMESPACE_USER, nil, 0)
 	if err != nil {
 		return nil, &XAttrError{"extattr_list_file", path, "", err}
+	}
+	if size == 0 {
+		return make([]string, 0), nil
 	}
 	buf := make([]byte, size)
 	// Read into buffer of that size.
