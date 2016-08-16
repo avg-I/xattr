@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	EXTATTR_NAMESPACE_USER = 1
+	extattr_namespace_user = 1
 )
 
 // Retrieve extended attribute data associated with path.
 func Getxattr(path, name string) ([]byte, error) {
 	// find size.
-	size, err := extattr_get_file(path, EXTATTR_NAMESPACE_USER, name, nil, 0)
+	size, err := extattr_get_file(path, extattr_namespace_user, name, nil, 0)
 	if err != nil {
 		return nil, &XAttrError{"extattr_get_file", path, name, err}
 	}
@@ -20,7 +20,7 @@ func Getxattr(path, name string) ([]byte, error) {
 		return buf, nil
 	}
 	// Read into buffer of that size.
-	read, err := extattr_get_file(path, EXTATTR_NAMESPACE_USER, name, &buf[0], size)
+	read, err := extattr_get_file(path, extattr_namespace_user, name, &buf[0], size)
 	if err != nil {
 		return nil, &XAttrError{"extattr_get_file", path, name, err}
 	}
@@ -31,7 +31,7 @@ func Getxattr(path, name string) ([]byte, error) {
 // given path in the file system.
 func Listxattr(path string) ([]string, error) {
 	// find size.
-	size, err := extattr_list_file(path, EXTATTR_NAMESPACE_USER, nil, 0)
+	size, err := extattr_list_file(path, extattr_namespace_user, nil, 0)
 	if err != nil {
 		return nil, &XAttrError{"extattr_list_file", path, "", err}
 	}
@@ -40,7 +40,7 @@ func Listxattr(path string) ([]string, error) {
 	}
 	buf := make([]byte, size)
 	// Read into buffer of that size.
-	read, err := extattr_list_file(path, EXTATTR_NAMESPACE_USER, &buf[0], size)
+	read, err := extattr_list_file(path, extattr_namespace_user, &buf[0], size)
 	if err != nil {
 		return nil, &XAttrError{"extattr_list_file", path, "", err}
 	}
@@ -49,7 +49,7 @@ func Listxattr(path string) ([]string, error) {
 
 // Associates name and data together as an attribute of path.
 func Setxattr(path, name string, data []byte) error {
-	written, err := extattr_set_file(path, EXTATTR_NAMESPACE_USER, name, &data[0], len(data))
+	written, err := extattr_set_file(path, extattr_namespace_user, name, &data[0], len(data))
 	if err != nil {
 		return &XAttrError{"extattr_set_file", path, name, err}
 	}
@@ -61,7 +61,7 @@ func Setxattr(path, name string, data []byte) error {
 
 // Remove the attribute.
 func Removexattr(path, name string) error {
-	if err := extattr_delete_file(path, EXTATTR_NAMESPACE_USER, name); err != nil {
+	if err := extattr_delete_file(path, extattr_namespace_user, name); err != nil {
 		return &XAttrError{"extattr_delete_file", path, name, err}
 	}
 	return nil
